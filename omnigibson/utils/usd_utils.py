@@ -820,6 +820,11 @@ def get_mesh_volume_and_com(mesh_prim):
         com = np.array([0, 0, mesh_prim.GetAttribute("height").Get() / 4])
     elif mesh_type == "Cylinder":
         volume = np.pi * (mesh_prim.GetAttribute("radius").Get() ** 2) * mesh_prim.GetAttribute("height").Get()
+    elif mesh_type == "Capsule":
+        volume = np.pi * (
+            (mesh_prim.GetAttribute("radius").Get() ** 2) * mesh_prim.GetAttribute("height").Get() 
+            + 4 / 3 * (mesh_prim.GetAttribute("radius").Get() ** 3)
+        )
     else:
         raise ValueError(f"Cannot compute volume for mesh of type: {mesh_type}")
 
