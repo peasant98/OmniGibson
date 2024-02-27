@@ -23,4 +23,4 @@ class PointGoalReward(BaseRewardFunction):
         # Reward received the pointgoal success condition is met
         reward = self._r_pointgoal if self._pointgoal.success else 0.0
 
-        return reward, {}
+        return reward, {"nav_success": self._pointgoal.success}

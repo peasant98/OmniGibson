@@ -12,7 +12,7 @@ gm.USE_FLATCACHE = True
 
 def main(local_addr, learner_addr, render):
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    config_path = os.path.join(script_dir, "omni_grpc.yaml")
+    config_path = "/home/svl/Documents/348I/scripts/test_nav_task.yaml"
     config = yaml.load(open(config_path, "r"), Loader=yaml.FullLoader)
 
     if not render:
@@ -28,7 +28,7 @@ def main(local_addr, learner_addr, render):
     #     env.step(env.action_space.sample())
     #     print("fps", 1/(time.time() - start_time))
 
-    wandb.init(entity="behavior-rl", project="sb3", group="worker")
+    wandb.init(entity="wensi-ai", project="348i", group="worker")
 
     # Now start servicing!
     serve_env_over_grpc(env, local_addr, learner_addr)

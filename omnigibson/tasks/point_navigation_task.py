@@ -87,7 +87,7 @@ class PointNavigationTask(BaseTask):
         self._floor = floor
         self._initial_pos = initial_pos if initial_pos is None else np.array(initial_pos)
         self._initial_quat = initial_quat if initial_quat is None else np.array(initial_quat)
-        self._goal_pos = goal_pos if goal_pos is None else np.array(goal_pos)
+        self._goal_pos = np.array([2, 2, 0]) if goal_pos is None else np.array(goal_pos)
         self._goal_tolerance = goal_tolerance
         self._goal_in_polar = goal_in_polar
         self._path_range = path_range

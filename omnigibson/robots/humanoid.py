@@ -20,9 +20,9 @@ class Humanoid(BaseRobot):
         scale=None,
         visible=True,
         visual_only=False,
-        self_collisions=True,
+        self_collisions=False,
         load_config=None,
-        fixed_base=True,
+        fixed_base=False,
 
         # Unique to USDObject hierarchy
         abilities=None,
@@ -132,7 +132,7 @@ class Humanoid(BaseRobot):
         super().update_controller_mode()
         # overwrite joint params (e.g. damping, stiffess, max_effort) here
         for joint in self.joints.values():
-            joint.stiffness = 10
+            joint.stiffness = 45
             joint.damping = 5
 
     @property

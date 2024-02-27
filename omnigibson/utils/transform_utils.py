@@ -531,7 +531,10 @@ def quat2euler(quat):
     Raises:
         AssertionError: [Invalid input shape]
     """
-    return R.from_quat(quat).as_euler("xyz")
+    try:
+        return R.from_quat(quat).as_euler("xyz")
+    except ValueError:
+        return np.zeros(3)
 
 def pose_in_A_to_pose_in_B(pose_A, pose_A_in_B):
     """

@@ -42,7 +42,7 @@ args = parser.parse_args()
 
 def _get_env_config():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    config_path = os.path.normpath(os.path.join(script_dir, "omni_grpc.yaml"))
+    config_path = "/home/svl/Documents/348I/scripts/test_nav_task.yaml"
     config = yaml.load(open(config_path, "r"), Loader=yaml.FullLoader)
     return config
 
@@ -180,8 +180,8 @@ def train(env, eval_env):
         eval_env.env_method('update_task', task_config)
     else:
         run = wandb.init(
-            entity="behavior-rl",
-            project="sb3",
+            entity="wensi-ai",
+            project="348i",
             sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
             monitor_gym=True,  # auto-upload the videos of agents playing the game
             # save_code=True,  # optional

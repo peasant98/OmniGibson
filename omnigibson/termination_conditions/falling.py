@@ -37,7 +37,7 @@ class Falling(FailureCondition):
         if self._topple:
             rotation = R.from_quat(env.scene.robots[self._robot_idn].get_orientation())
             robot_up = rotation.apply(np.array([0, 0, 1]))
-            if robot_up[2] < 0.75:
+            if robot_up[2] < 0.5:
                 return True
             
         return False
