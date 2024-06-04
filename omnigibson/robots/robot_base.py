@@ -386,6 +386,44 @@ class BaseRobot(USDObject, ControllableObject, GymObservable):
             if modality in sensor.all_modalities:
                 sensor.remove_modality(modality=modality)
 
+    def get_vision_data(self):
+        """
+        Renders this robot's key sensors, visualizing them via matplotlib plots
+        """
+        remaining_obs_modalities = deepcopy(self.obs_modalities)
+        
+        if len(self.sensors) > 1:
+            raise ValueError("This method only supports robots with a single sensor for now!")
+        
+        for sensor in self.sensors.values():
+            obs, _ = sensor.get_obs()
+            sensor_frames = {}
+            if isinstance(sensor, VisionSensor):
+                # We check for rgb, depth, normal, seg_instance
+                for modality in ["rgb", "depth", "normal", "seg_instance"]:
+                    if modality in sensor.modalities:
+                        ob = obs[modality]
+                        if modality == "rgb":
+                            # Ignore alpha channel, map to floats
+                            ob = ob[:, :, :3] / 255.0
+                        elif modality == "seg_instance":
+                            # Map IDs to rgb
+                            ob = segmentation_to_rgb(ob, N=256) / 255.0
+                        elif modality == "normal":
+                            # Re-map to 0 - 1 range
+                            ob = (ob + 1.0) / 2.0
+                        else:
+                            # Depth, nothing to do here
+                            pass
+                        # Add this observation to our frames and remove the modality
+                        sensor_frames[modality] = ob
+                        remaining_obs_modalities -= {modality}
+                    else:
+                        # Warn user that we didn't find this modality
+                        print(f"Modality {modality} is not active in sensor {sensor.name}, skipping...")
+
+            return sensor_frames
+
     def visualize_sensors(self):
         """
         Renders this robot's key sensors, visualizing them via matplotlib plots
@@ -552,8 +590,8 @@ class BaseRobot(USDObject, ControllableObject, GymObservable):
                 "noise_type": None,
                 "noise_kwargs": None,
                 "sensor_kwargs": {
-                    "image_height": 128,
-                    "image_width": 128,
+                    "image_height": 720,
+                    "image_width": 720,
                 },
             },
             "ScanSensor": {
