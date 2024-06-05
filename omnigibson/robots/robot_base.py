@@ -385,7 +385,24 @@ class BaseRobot(USDObject, ControllableObject, GymObservable):
         for sensor in self._sensors.values():
             if modality in sensor.all_modalities:
                 sensor.remove_modality(modality=modality)
-
+    
+    def get_robot_mask(self):
+        """
+        Returns:
+            np.ndarray: 2D binary mask of the robot in the scene
+        """
+        mask = None
+        for sensor in self.sensors.values():
+            obs, _ = sensor.get_obs()
+            if isinstance(sensor, VisionSensor):
+                # We check for rgb, depth, normal, seg_instance
+                for modality in ["seg_instance"]:
+                    if modality in sensor.modalities:
+                        raw_ob = obs[modality]
+                        # the mask is where raw ob is 2.
+                        mask = raw_ob == 2
+                        return mask
+    
     def get_vision_data(self):
         """
         Renders this robot's key sensors, visualizing them via matplotlib plots
@@ -400,13 +417,13 @@ class BaseRobot(USDObject, ControllableObject, GymObservable):
             sensor_frames = {}
             if isinstance(sensor, VisionSensor):
                 # We check for rgb, depth, normal, seg_instance
-                for modality in ["rgb", "depth", "normal", "seg_instance"]:
+                for modality in ["rgb", "depth", "normal", "seg_instance", "seg_semantic"]:
                     if modality in sensor.modalities:
                         ob = obs[modality]
                         if modality == "rgb":
                             # Ignore alpha channel, map to floats
                             ob = ob[:, :, :3] / 255.0
-                        elif modality == "seg_instance":
+                        elif modality == "seg_instance" or modality == "seg_semantic":
                             # Map IDs to rgb
                             ob = segmentation_to_rgb(ob, N=256) / 255.0
                         elif modality == "normal":
@@ -435,13 +452,13 @@ class BaseRobot(USDObject, ControllableObject, GymObservable):
             sensor_frames = []
             if isinstance(sensor, VisionSensor):
                 # We check for rgb, depth, normal, seg_instance
-                for modality in ["rgb", "depth", "normal", "seg_instance"]:
+                for modality in ["rgb", "depth", "normal", "seg_instance", "seg_semantic"]:
                     if modality in sensor.modalities:
                         ob = obs[modality]
                         if modality == "rgb":
                             # Ignore alpha channel, map to floats
                             ob = ob[:, :, :3] / 255.0
-                        elif modality == "seg_instance":
+                        elif modality == "seg_instance" or modality == "seg_semantic":
                             # Map IDs to rgb
                             ob = segmentation_to_rgb(ob, N=256) / 255.0
                         elif modality == "normal":
