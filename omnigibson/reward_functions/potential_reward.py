@@ -42,6 +42,8 @@ class PotentialReward(BaseRewardFunction):
     def _step(self, task, env, action):
         # Reward is proportional to the potential difference between the current and previous timestep
         new_potential = self._potential_fcn(env)
+        if new_potential is None:
+            new_potential = 0.0
         reward = (self._potential - new_potential) * self._r_potential
 
         # Update internal potential
