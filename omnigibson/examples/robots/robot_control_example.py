@@ -143,7 +143,7 @@ def main(random_selection=False, headless=False, short_exec=False):
     step = 0
     while step != max_steps:
         action = action_generator.get_random_action() if control_mode == "random" else action_generator.get_teleop_action()
-        env.step(action=action)
+        obs, rew, done, info = env.step(action=action)
         step += 1
 
     # Always shut down the environment cleanly at the end
